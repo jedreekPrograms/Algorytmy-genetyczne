@@ -21,8 +21,7 @@ public class TSPParser {
 
         boolean nodeSection = false;
 
-        while ((line = reader.readLine())
-                != null) {
+        while ((line = reader.readLine()) != null) {
 
             line = line.trim();
 
@@ -30,8 +29,7 @@ public class TSPParser {
                 continue;
             }
 
-            if (line.equals(
-                    "NODE_COORD_SECTION")) {
+            if (line.equals("NODE_COORD_SECTION")) {
 
                 nodeSection = true;
 

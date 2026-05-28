@@ -20,13 +20,13 @@ public class ParallelBenchmarkRunner {
 
     private static final String[] INSTANCES = {
 
-//            "src/main/resources/djibouti.tsp",
-//            "src/main/resources/qatar.tsp",
-//            "src/main/resources/western_sahara.tsp",
-//            "src/main/resources/zimbabwe.tsp",
-//            "src/main/resources/oman.tsp",
-//            "src/main/resources/ireland.tsp",
-//            "src/main/resources/canada.tsp",
+            "src/main/resources/djibouti.tsp",
+            "src/main/resources/qatar.tsp",
+            "src/main/resources/western_sahara.tsp",
+            "src/main/resources/zimbabwe.tsp",
+            "src/main/resources/oman.tsp",
+            "src/main/resources/ireland.tsp",
+            "src/main/resources/canada.tsp",
             "src/main/resources/tanzania.tsp",
             "src/main/resources/uruguay.tsp",
             "src/main/resources/egypt.tsp"

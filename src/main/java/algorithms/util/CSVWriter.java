@@ -3,7 +3,7 @@ package algorithms.util;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
+//
 public class CSVWriter {
 
     private final String path;
@@ -13,8 +13,7 @@ public class CSVWriter {
         this.path = path;
     }
 
-    public void resetFile()
-            throws IOException {
+    public void resetFile() throws IOException {
 
         File file = new File(path);
 

@@ -17,9 +17,6 @@ public class IslandGeneticAlgorithm {
 
     private final int migrantsCount;
 
-    /*
-        statistics
-     */
     private long migrations;
 
     private long totalTimeMs;

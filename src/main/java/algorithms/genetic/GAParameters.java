@@ -113,12 +113,16 @@ public class GAParameters {
 
             p.localSearchIterations = 35;
 
+            //co ile generacji mocniejsze
             p.intensificationInterval = 5;
 
+            //ile ulepszamy
             p.intensificationCount = 5;
 
+            //prawdopodobienstwo uzycia local search
             p.memeticProbability = 0.28;
 
+            //nowe osobniki zeby uniknac stagnacji
             p.immigrantsCount = 2;
         }
 

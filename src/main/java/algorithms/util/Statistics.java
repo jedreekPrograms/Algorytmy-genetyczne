@@ -1,7 +1,7 @@
 package algorithms.util;
 
 import java.util.List;
-
+//
 public class Statistics {
 
     public static double average(List<Double> values) {

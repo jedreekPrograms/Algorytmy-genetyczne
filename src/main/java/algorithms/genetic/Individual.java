@@ -132,4 +132,5 @@ public class Individual implements Comparable<Individual> {
 
         return Arrays.toString(chromosome) + " distance=" + distance;
     }
+
 }

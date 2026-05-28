@@ -60,4 +60,5 @@ public class TwoOptMove {
                 ", delta=" + delta +
                 '}';
     }
+    //
 }

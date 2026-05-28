@@ -5,7 +5,7 @@ import algorithms.model.TSPInstance;
 import java.util.Random;
 
 public class NearestNeighborInitializer {
-
+//
     private static final Random random = new Random();
 
     public static int[] generate(TSPInstance instance) {

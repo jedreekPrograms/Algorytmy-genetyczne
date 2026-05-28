@@ -1,5 +1,5 @@
 # Genetic Algorithms for Travelling Salesman Problem (TSP)
-
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/gist/jedreekPrograms/c657d18a7626fbe068e)
 Projekt wykonany w ramach kursu **Algorytmy Metaheurystyczne 2026**.
 
 ## Opis projektu

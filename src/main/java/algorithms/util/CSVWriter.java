@@ -16,15 +16,13 @@ public class CSVWriter {
     public void resetFile()
             throws IOException {
 
-        File file =
-                new File(path);
+        File file = new File(path);
 
         if (file.exists()) {
             file.delete();
         }
 
-        FileWriter writer =
-                new FileWriter(path);
+        FileWriter writer = new FileWriter(path);
 
         writer.write(
                 "instance," +
@@ -51,11 +49,7 @@ public class CSVWriter {
             long wallClockTime)
             throws IOException {
 
-        FileWriter writer =
-                new FileWriter(
-                        path,
-                        true
-                );
+        FileWriter writer = new FileWriter(path, true);
 
         writer.write(
                 instance + "," +
@@ -71,8 +65,7 @@ public class CSVWriter {
         writer.close();
     }
 
-    private String format(
-            double value) {
+    private String format(double value) {
 
         return String.format(
                 "%.2f",

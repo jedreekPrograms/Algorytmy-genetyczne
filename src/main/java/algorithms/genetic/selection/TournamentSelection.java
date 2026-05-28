@@ -12,48 +12,30 @@ public class TournamentSelection {
 
     private final Random random;
 
-    /*
-        statistics
-     */
     private long selections;
 
-    public TournamentSelection(
-            int tournamentSize) {
+    public TournamentSelection(int tournamentSize) {
 
-        this.tournamentSize =
-                tournamentSize;
+        this.tournamentSize = tournamentSize;
 
-        this.random =
-                new Random();
+        this.random = new Random();
 
         this.selections = 0;
     }
 
-    public Individual select(
-            Population population,
-            TSPInstance instance) {
+    public Individual select(Population population, TSPInstance instance) {
 
         selections++;
 
         Individual best = null;
 
-        for (int i = 0;
-             i < tournamentSize;
-             i++) {
+        for (int i = 0; i < tournamentSize; i++) {
 
-            int index =
-                    random.nextInt(
-                            population.size()
-                    );
+            int index = random.nextInt(population.size());
 
-            Individual candidate =
-                    population.get(index);
+            Individual candidate = population.get(index);
 
-            if (best == null
-                    ||
-                    candidate.getDistance(instance)
-                            <
-                            best.getDistance(instance)) {
+            if (best == null || candidate.getDistance(instance) < best.getDistance(instance)) {
 
                 best = candidate;
             }

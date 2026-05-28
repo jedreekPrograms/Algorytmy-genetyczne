@@ -20,27 +20,21 @@ public class Population {
 
     public Population() {
 
-        this.individuals =
-                new ArrayList<>();
+        this.individuals = new ArrayList<>();
 
-        this.creationTime =
-                System.currentTimeMillis();
+        this.creationTime = System.currentTimeMillis();
     }
 
-    public Population(
-            List<Individual> individuals) {
+    public Population(List<Individual> individuals) {
 
-        this.individuals =
-                individuals;
+        this.individuals = individuals;
 
-        this.creationTime =
-                System.currentTimeMillis();
+        this.creationTime = System.currentTimeMillis();
 
         this.dirty = true;
     }
 
-    public void add(
-            Individual individual) {
+    public void add(Individual individual) {
 
         individuals.add(individual);
 
@@ -69,26 +63,18 @@ public class Population {
 
     public Individual getBest() {
 
-        if (!dirty
-                && cachedBest != null) {
+        if (!dirty && cachedBest != null) {
 
             return cachedBest;
         }
 
-        Individual best =
-                individuals.get(0);
+        Individual best = individuals.get(0);
 
-        for (int i = 1;
-             i < individuals.size();
-             i++) {
+        for (int i = 1; i < individuals.size(); i++) {
 
-            if (individuals.get(i)
-                    .getDistanceValue()
-                    <
-                    best.getDistanceValue()) {
+            if (individuals.get(i).getDistanceValue() < best.getDistanceValue()) {
 
-                best =
-                        individuals.get(i);
+                best = individuals.get(i);
             }
         }
 
@@ -99,26 +85,18 @@ public class Population {
 
     public Individual getWorst() {
 
-        if (!dirty
-                && cachedWorst != null) {
+        if (!dirty && cachedWorst != null) {
 
             return cachedWorst;
         }
 
-        Individual worst =
-                individuals.get(0);
+        Individual worst = individuals.get(0);
 
-        for (int i = 1;
-             i < individuals.size();
-             i++) {
+        for (int i = 1; i < individuals.size(); i++) {
 
-            if (individuals.get(i)
-                    .getDistanceValue()
-                    >
-                    worst.getDistanceValue()) {
+            if (individuals.get(i).getDistanceValue() > worst.getDistanceValue()) {
 
-                worst =
-                        individuals.get(i);
+                worst = individuals.get(i);
             }
         }
 
@@ -129,53 +107,44 @@ public class Population {
 
     public double getAverageDistance() {
 
-        if (!dirty
-                && cachedAverage > 0) {
+        if (!dirty && cachedAverage > 0) {
 
             return cachedAverage;
         }
 
         double sum = 0.0;
 
-        for (Individual individual
-                : individuals) {
+        for (Individual individual : individuals) {
 
-            sum +=
-                    individual.getDistanceValue();
+            sum += individual.getDistanceValue();
         }
 
-        cachedAverage =
-                sum / individuals.size();
+        cachedAverage = sum / individuals.size();
 
         dirty = false;
 
         return cachedAverage;
     }
 
+    //liczenie stagnacji, jak sie roznia jakosociwo, niska-podobni
     public double getDiversity() {
 
         if (individuals.size() < 2) {
             return 0.0;
         }
 
-        double average =
-                getAverageDistance();
+        double average = getAverageDistance();
 
         double sum = 0.0;
 
-        for (Individual individual
-                : individuals) {
+        for (Individual individual : individuals) {
 
-            double diff =
-                    individual.getDistanceValue()
-                            - average;
+            double diff = individual.getDistanceValue() - average;
 
             sum += diff * diff;
         }
 
-        return Math.sqrt(
-                sum / individuals.size()
-        );
+        return Math.sqrt(sum / individuals.size());
     }
 
     public long getCreationTime() {

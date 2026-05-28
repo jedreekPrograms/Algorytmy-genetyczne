@@ -10,58 +10,36 @@ public class MemeticImprover {
 
     private final int maxIterations;
 
-    /*
-        statistics
-     */
     private long improvements;
 
     private long totalTimeMs;
 
-    public MemeticImprover(
-            TSPInstance instance,
-            int maxIterations,
-            int candidateCount) {
+    public MemeticImprover(TSPInstance instance, int maxIterations, int candidateCount) {
 
-        this.maxIterations =
-                maxIterations;
+        this.maxIterations = maxIterations;
 
-        this.localSearch =
-                new TwoOptLocalSearch(
-                        instance,
-                        candidateCount
-                );
+        this.localSearch = new TwoOptLocalSearch(instance, candidateCount);
 
         this.improvements = 0;
 
         this.totalTimeMs = 0;
     }
 
-    public void improve(
-            Individual individual,
-            TSPInstance instance) {
+    public void improve(Individual individual, TSPInstance instance) {
 
-        long start =
-                System.currentTimeMillis();
+        long start = System.currentTimeMillis();
 
-        double before =
-                individual.getDistance(instance);
+        double before = individual.getDistance(instance);
 
-        localSearch.improve(
-                individual,
-                instance,
-                maxIterations
-        );
+        localSearch.improve(individual, instance, maxIterations);
 
-        double after =
-                individual.getDistance(instance);
+        double after = individual.getDistance(instance);
 
         if (after < before) {
             improvements++;
         }
 
-        totalTimeMs +=
-                System.currentTimeMillis()
-                        - start;
+        totalTimeMs += System.currentTimeMillis() - start;
     }
 
     public long getImprovements() {
@@ -80,9 +58,7 @@ public class MemeticImprover {
             return 0.0;
         }
 
-        return (double)
-                totalTimeMs
-                / improvements;
+        return (double) totalTimeMs / improvements;
     }
 
     @Override

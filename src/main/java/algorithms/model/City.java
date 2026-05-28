@@ -8,10 +8,7 @@ public class City {
 
     private final double y;
 
-    public City(
-            int id,
-            double x,
-            double y) {
+    public City(int id, double x, double y) {
 
         this.id = id;
 

@@ -10,19 +10,13 @@ public class TSPSolution {
 
     private final long timeMs;
 
-    public TSPSolution(
-            int[] route,
-            double distance,
-            long timeMs) {
+    public TSPSolution(int[] route, double distance, long timeMs) {
 
-        this.route =
-                route.clone();
+        this.route = route.clone();
 
-        this.distance =
-                distance;
+        this.distance = distance;
 
-        this.timeMs =
-                timeMs;
+        this.timeMs = timeMs;
     }
 
     public int[] getRoute() {

@@ -23,10 +23,10 @@ public class ParallelBenchmarkRunner {
 //            "src/main/resources/djibouti.tsp",
 //            "src/main/resources/qatar.tsp",
 //            "src/main/resources/western_sahara.tsp",
-            "src/main/resources/zimbabwe.tsp",
-            "src/main/resources/oman.tsp",
-            "src/main/resources/ireland.tsp",
-            "src/main/resources/canada.tsp",
+//            "src/main/resources/zimbabwe.tsp",
+//            "src/main/resources/oman.tsp",
+//            "src/main/resources/ireland.tsp",
+//            "src/main/resources/canada.tsp",
             "src/main/resources/tanzania.tsp",
             "src/main/resources/uruguay.tsp",
             "src/main/resources/egypt.tsp"
@@ -34,148 +34,91 @@ public class ParallelBenchmarkRunner {
 
     private final CSVWriter csvWriter;
 
-    public ParallelBenchmarkRunner()
-            throws Exception {
+    public ParallelBenchmarkRunner() throws Exception {
 
-        this.csvWriter =
-                new CSVWriter(
-                        "benchmark_results.csv"
-                );
+        this.csvWriter = new CSVWriter("benchmark_results.csv");
 
         csvWriter.resetFile();
     }
 
-    public void run()
-            throws Exception {
+    public void run() throws Exception {
 
-        for (String instancePath
-                : INSTANCES) {
+        for (String instancePath : INSTANCES) {
 
-            runGeneticAlgorithm(
-                    instancePath
-            );
+            runGeneticAlgorithm(instancePath);
 
-            runIslandGeneticAlgorithm(
-                    instancePath
-            );
+            runIslandGeneticAlgorithm(instancePath);
         }
     }
 
-    private void runGeneticAlgorithm(
-            String instancePath)
-            throws Exception {
+    private void runGeneticAlgorithm(String instancePath) throws Exception {
 
-        System.out.println(
-                "\n======================================"
-        );
+        System.out.println("\n======================================");
 
-        System.out.println(
-                "RUNNING GA -> "
-                        + instancePath
-        );
+        System.out.println("RUNNING GA -> " + instancePath);
 
-        TSPInstance instance =
-                TSPParser.parse(
-                        instancePath
-                );
+        TSPInstance instance = TSPParser.parse(instancePath);
 
-        ExecutorService executor =
-                Executors.newFixedThreadPool(
-                        Runtime.getRuntime()
-                                .availableProcessors()
-                );
+        //parralelism
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-        List<Future<Result>> futures =
-                new ArrayList<>();
+        List<Future<Result>> futures = new ArrayList<>();
 
-        long wallClockStart =
-                System.currentTimeMillis();
+        long wallClockStart = System.currentTimeMillis();
 
-        for (int run = 0;
-             run < RUNS;
-             run++) {
+        for (int run = 0; run < RUNS; run++) {
 
             final int currentRun = run;
 
-            futures.add(
-                    executor.submit(() -> {
+            futures.add(executor.submit(() -> {
 
-                        long start =
-                                System.currentTimeMillis();
+                        long start = System.currentTimeMillis();
 
-                        GeneticAlgorithm ga =
-                                new GeneticAlgorithm(
-                                        instance
-                                );
+                        GeneticAlgorithm ga = new GeneticAlgorithm(instance);
 
-                        Individual best =
-                                ga.solve(instance);
+                        Individual best = ga.solve(instance);
 
-                        long time =
-                                System.currentTimeMillis()
-                                        - start;
+                        long time = System.currentTimeMillis() - start;
 
-                        System.out.println(
-                                "[GA] RUN "
-                                        + (currentRun + 1)
-                                        + "/"
-                                        + RUNS
-                                        + " -> "
-                                        + String.format(
-                                        "%.2f",
-                                        best.getDistance(instance)
-                                )
+                        System.out.println("[GA] RUN " + (currentRun + 1)
+                                + "/" + RUNS + " -> " + String.format("%.2f", best.getDistance(instance))
                                         + " | "
                                         + time
                                         + " ms"
                         );
 
-                        return new Result(
-                                best,
-                                time
-                        );
+                        return new Result(best, time);
                     })
             );
         }
 
-        List<Double> distances =
-                new ArrayList<>();
+        List<Double> distances = new ArrayList<>();
 
         long cpuTime = 0;
 
         Individual globalBest = null;
 
-        for (Future<Result> future
-                : futures) {
+        for (Future<Result> future : futures) {
 
-            Result result =
-                    future.get();
+            //blokuje program az dany run sie skonczy
+            Result result = future.get();
 
-            double distance =
-                    result.best
-                            .getDistance(instance);
+            double distance = result.best.getDistance(instance);
 
             distances.add(distance);
 
-            cpuTime +=
-                    result.timeMs;
+            cpuTime += result.timeMs;
 
-            if (globalBest == null
-                    ||
-                    distance
-                            <
-                            globalBest.getDistance(instance)) {
+            if (globalBest == null || distance < globalBest.getDistance(instance)) {
 
-                globalBest =
-                        result.best;
+                globalBest = result.best;
             }
         }
 
+        //zamykamy thread poll
         executor.shutdown();
 
-        long wallClockTime =
-                System.currentTimeMillis()
-                        - wallClockStart;
+        long wallClockTime = System.currentTimeMillis() - wallClockStart;
 
         printStatistics(
                 "GA",
@@ -204,57 +147,34 @@ public class ParallelBenchmarkRunner {
         );
     }
 
-    private void runIslandGeneticAlgorithm(
-            String instancePath)
-            throws Exception {
+    //mamy kilka wysp populacji
+    private void runIslandGeneticAlgorithm(String instancePath) throws Exception {
 
-        System.out.println(
-                "\n======================================"
-        );
+        System.out.println("\n======================================");
 
-        System.out.println(
-                "RUNNING ISLAND GA -> "
-                        + instancePath
-        );
+        System.out.println("RUNNING ISLAND GA -> " + instancePath);
 
-        TSPInstance instance =
-                TSPParser.parse(
-                        instancePath
-                );
+        TSPInstance instance = TSPParser.parse(instancePath);
 
-        ExecutorService executor =
-                Executors.newFixedThreadPool(
-                        Runtime.getRuntime()
-                                .availableProcessors()
-                );
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-        List<Future<Result>> futures =
-                new ArrayList<>();
+        List<Future<Result>> futures = new ArrayList<>();
 
-        long wallClockStart =
-                System.currentTimeMillis();
+        long wallClockStart = System.currentTimeMillis();
 
-        for (int run = 0;
-             run < RUNS;
-             run++) {
+        for (int run = 0; run < RUNS; run++) {
 
             final int currentRun = run;
 
-            futures.add(
-                    executor.submit(() -> {
+            futures.add(executor.submit(() -> {
 
-                        long start =
-                                System.currentTimeMillis();
+                        long start = System.currentTimeMillis();
 
-                        IslandGeneticAlgorithm ga =
-                                new IslandGeneticAlgorithm();
+                        IslandGeneticAlgorithm ga = new IslandGeneticAlgorithm();
 
-                        Individual best =
-                                ga.solve(instance);
+                        Individual best = ga.solve(instance);
 
-                        long time =
-                                System.currentTimeMillis()
-                                        - start;
+                        long time = System.currentTimeMillis() - start;
 
                         System.out.println(
                                 "[ISLAND] RUN "
@@ -271,52 +191,36 @@ public class ParallelBenchmarkRunner {
                                         + " ms"
                         );
 
-                        return new Result(
-                                best,
-                                time
-                        );
+                        return new Result(best, time);
                     })
             );
         }
 
-        List<Double> distances =
-                new ArrayList<>();
+        List<Double> distances = new ArrayList<>();
 
         long cpuTime = 0;
 
         Individual globalBest = null;
 
-        for (Future<Result> future
-                : futures) {
+        for (Future<Result> future : futures) {
 
-            Result result =
-                    future.get();
+            Result result = future.get();
 
-            double distance =
-                    result.best
-                            .getDistance(instance);
+            double distance = result.best.getDistance(instance);
 
             distances.add(distance);
 
-            cpuTime +=
-                    result.timeMs;
+            cpuTime += result.timeMs;
 
-            if (globalBest == null
-                    ||
-                    distance
-                            <
-                            globalBest.getDistance(instance)) {
+            if (globalBest == null || distance < globalBest.getDistance(instance)) {
 
-                globalBest =
-                        result.best;
+                globalBest = result.best;
             }
         }
 
         executor.shutdown();
 
-        long wallClockTime =
-                System.currentTimeMillis()
-                        - wallClockStart;
+        long wallClockTime = System.currentTimeMillis() - wallClockStart;
 
         printStatistics(
                 "ISLAND_GA",
@@ -351,11 +255,7 @@ public class ParallelBenchmarkRunner {
             long cpuTime,
             long wallClockTime) {
 
-        System.out.println(
-                "\n========== "
-                        + algorithm
-                        + " =========="
-        );
+        System.out.println("\n========== " + algorithm + " ==========");
 
         System.out.println(
                 "BEST: "
@@ -391,19 +291,10 @@ public class ParallelBenchmarkRunner {
                 )
         );
 
-        System.out.println(
-                "CPU TIME [ms]: "
-                        + cpuTime
-        );
+        System.out.println("CPU TIME [ms]: " + cpuTime);
 
-        System.out.println(
-                "WALL CLOCK TIME [ms]: "
-                        + wallClockTime
-        );
+        System.out.println("WALL CLOCK TIME [ms]: " + wallClockTime);
 
-        System.out.println(
-                "AVG TIME/RUN [ms]: "
-                        + (wallClockTime / RUNS)
-        );
+        System.out.println("AVG TIME/RUN [ms]: " + (wallClockTime / RUNS));
     }
 }

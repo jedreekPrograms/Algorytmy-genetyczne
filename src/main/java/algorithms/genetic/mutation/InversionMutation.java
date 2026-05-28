@@ -8,35 +8,24 @@ public class InversionMutation {
 
     private final Random random;
 
-    /*
-        statistics
-     */
     private long mutations;
 
     public InversionMutation() {
 
-        this.random =
-                new Random();
+        this.random = new Random();
 
         this.mutations = 0;
     }
 
-    public void mutate(
-            Individual individual) {
+    public void mutate(Individual individual) {
 
         mutations++;
 
-        int size =
-                individual.size();
+        int size = individual.size();
 
-        /*
-            choose segment
-         */
-        int left =
-                random.nextInt(size);
+        int left = random.nextInt(size);
 
-        int right =
-                random.nextInt(size);
+        int right = random.nextInt(size);
 
         if (left > right) {
 
@@ -47,29 +36,19 @@ public class InversionMutation {
             right = temp;
         }
 
-        /*
-            avoid useless moves
-         */
         if (left == right) {
             return;
         }
 
-        int[] chromosome =
-                individual.getChromosomeReference();
+        int[] chromosome = individual.getChromosomeReference();
 
-        /*
-            reverse segment
-         */
         while (left < right) {
 
-            int temp =
-                    chromosome[left];
+            int temp = chromosome[left];
 
-            chromosome[left] =
-                    chromosome[right];
+            chromosome[left] = chromosome[right];
 
-            chromosome[right] =
-                    temp;
+            chromosome[right] = temp;
 
             left++;
             right--;

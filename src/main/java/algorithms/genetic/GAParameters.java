@@ -20,23 +20,21 @@ public class GAParameters {
 
     public int localSearchIterations;
 
+    //co ile generacji uruchamiamy mocniejszy local search
     public int intensificationInterval;
 
+    //ile osobnikow ulepszamy
     public int intensificationCount;
 
     public double memeticProbability;
 
+    //nowe osobniki, swieza krew populacji
     public int immigrantsCount;
 
-    public static GAParameters forProblemSize(
-            int n) {
+    public static GAParameters forProblemSize(int n) {
 
-        GAParameters p =
-                new GAParameters();
+        GAParameters p = new GAParameters();
 
-        /*
-            SMALL
-         */
         if (n <= 500) {
 
             p.populationSize = 100;
@@ -66,9 +64,6 @@ public class GAParameters {
             p.immigrantsCount = 3;
         }
 
-        /*
-            MEDIUM
-         */
         else if (n <= 3000) {
 
             p.populationSize = 70;
@@ -98,34 +93,31 @@ public class GAParameters {
             p.immigrantsCount = 2;
         }
 
-        /*
-            LARGE
-         */
         else {
 
-            p.populationSize = 50;
+            p.populationSize = 55;
 
-            p.generations = 350;
+            p.generations = 420;
 
-            p.crossoverRate = 0.92;
+            p.crossoverRate = 0.93;
 
-            p.mutationRate = 0.10;
+            p.mutationRate = 0.11;
 
-            p.tournamentSize = 4;
+            p.tournamentSize = 5;
 
-            p.eliteSize = 2;
+            p.eliteSize = 3;
 
-            p.noImprovementLimit = 120;
+            p.noImprovementLimit = 110;
 
-            p.candidateCount = 30;
+            p.candidateCount = 28;
 
-            p.localSearchIterations = 40;
+            p.localSearchIterations = 35;
 
-            p.intensificationInterval = 6;
+            p.intensificationInterval = 5;
 
             p.intensificationCount = 5;
 
-            p.memeticProbability = 0.35;
+            p.memeticProbability = 0.28;
 
             p.immigrantsCount = 2;
         }

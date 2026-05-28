@@ -8,51 +8,34 @@ public class InsertMutation {
 
     private final Random random;
 
-    /*
-        statistics
-     */
     private long mutations;
 
     public InsertMutation() {
 
-        this.random =
-                new Random();
+        this.random = new Random();
 
         this.mutations = 0;
     }
 
-    public void mutate(
-            Individual individual) {
+    public void mutate(Individual individual) {
 
         mutations++;
 
-        int size =
-                individual.size();
+        int size = individual.size();
 
-        int from =
-                random.nextInt(size);
+        int from = random.nextInt(size);
 
-        int to =
-                random.nextInt(size);
+        int to = random.nextInt(size);
 
-        /*
-            avoid useless move
-         */
         while (from == to) {
 
-            to =
-                    random.nextInt(size);
+            to = random.nextInt(size);
         }
 
-        int[] chromosome =
-                individual.getChromosomeReference();
+        int[] chromosome = individual.getChromosomeReference();
 
-        int value =
-                chromosome[from];
+        int value = chromosome[from];
 
-        /*
-            shift left
-         */
         if (from < to) {
 
             System.arraycopy(
@@ -64,9 +47,6 @@ public class InsertMutation {
             );
         }
 
-        /*
-            shift right
-         */
         else {
 
             System.arraycopy(

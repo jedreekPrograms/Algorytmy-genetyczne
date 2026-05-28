@@ -8,14 +8,9 @@ import java.io.IOException;
 
 public class RouteExporter {
 
-    public static void exportRoute(
-            Individual individual,
-            String instanceName,
-            String algorithm)
-            throws IOException {
+    public static void exportRoute(Individual individual, String instanceName, String algorithm) throws IOException {
 
-        File directory =
-                new File("best_routes");
+        File directory = new File("best_routes");
 
         if (!directory.exists()) {
 
@@ -32,8 +27,7 @@ public class RouteExporter {
                         + algorithm
                         + ".txt";
 
-        FileWriter writer =
-                new FileWriter(filename);
+        FileWriter writer = new FileWriter(filename);
 
         writer.write(
                 "INSTANCE: "
@@ -72,8 +66,7 @@ public class RouteExporter {
                 "ROUTE:\n"
         );
 
-        int[] route =
-                individual.getChromosomeReference();
+        int[] route = individual.getChromosomeReference();
 
         for (int city : route) {
 

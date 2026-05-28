@@ -4,49 +4,37 @@ import algorithms.model.TSPInstance;
 
 import java.util.Arrays;
 
-public class Individual
-        implements Comparable<Individual> {
+public class Individual implements Comparable<Individual> {
 
+    //zapis trasy permutajca, chromosome[i] gen
     private int[] chromosome;
 
     private double distance;
 
     private boolean dirty = true;
 
-    /*
-        statistics
-     */
     private long evaluations;
 
     private final long createdTime;
 
-    public Individual(
-            int[] chromosome) {
+    public Individual(int[] chromosome) {
 
-        this.chromosome =
-                chromosome.clone();
+        this.chromosome = chromosome.clone();
 
-        this.createdTime =
-                System.currentTimeMillis();
+        this.createdTime = System.currentTimeMillis();
     }
 
-    public Individual(
-            Individual other) {
+    public Individual(Individual other) {
 
-        this.chromosome =
-                other.chromosome.clone();
+        this.chromosome = other.chromosome.clone();
 
-        this.distance =
-                other.distance;
+        this.distance = other.distance;
 
-        this.dirty =
-                other.dirty;
+        this.dirty = other.dirty;
 
-        this.evaluations =
-                other.evaluations;
+        this.evaluations = other.evaluations;
 
-        this.createdTime =
-                other.createdTime;
+        this.createdTime = other.createdTime;
     }
 
     public int[] getChromosome() {
@@ -59,12 +47,13 @@ public class Individual
         return chromosome;
     }
 
-    public void setChromosome(
-            int[] chromosome) {
+    public void setChromosome(int[] chromosome) {
 
-        this.chromosome =
-                chromosome.clone();
+        this.chromosome = chromosome.clone();
 
+        //po mutation crossover trasa sie zmienia, liczymy fitness bo stary discance bledny
+        //cached fitness niekatulany
+        //z cache jesli sie nie zmienil mamy gotowy wynik
         this.dirty = true;
     }
 
@@ -73,24 +62,22 @@ public class Individual
         return chromosome.length;
     }
 
-    public int getGene(
-            int index) {
+    public int getGene(int index) {
 
+        //miasto na pozycji i
         return chromosome[index];
     }
 
-    public void setGene(
-            int index,
-            int value) {
+    public void setGene(int index, int value) {
 
         chromosome[index] = value;
 
         dirty = true;
     }
 
-    public double getDistance(
-            TSPInstance instance) {
+    public double getDistance(TSPInstance instance) {
 
+        //jesli sie nie zmienil zwracamy gootowy wynik
         if (!dirty) {
             return distance;
         }
@@ -99,19 +86,12 @@ public class Individual
 
         double total = 0.0;
 
-        for (int i = 0;
-             i < chromosome.length - 1;
-             i++) {
+        for (int i = 0; i < chromosome.length - 1; i++) {
 
-            total += instance.getDistance(
-                    chromosome[i],
-                    chromosome[i + 1]
-            );
+            total += instance.getDistance(chromosome[i], chromosome[i + 1]);
         }
 
-        total += instance.getDistance(
-                chromosome[chromosome.length - 1],
-                chromosome[0]
+        total += instance.getDistance(chromosome[chromosome.length - 1], chromosome[0]
         );
 
         distance = total;
@@ -142,20 +122,14 @@ public class Individual
     }
 
     @Override
-    public int compareTo(
-            Individual other) {
+    public int compareTo(Individual other) {
 
-        return Double.compare(
-                this.distance,
-                other.distance
-        );
+        return Double.compare(this.distance, other.distance);
     }
 
     @Override
     public String toString() {
 
-        return Arrays.toString(chromosome)
-                + " distance="
-                + distance;
+        return Arrays.toString(chromosome) + " distance=" + distance;
     }
 }

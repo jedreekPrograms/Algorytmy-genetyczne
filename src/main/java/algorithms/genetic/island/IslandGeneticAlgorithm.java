@@ -37,58 +37,33 @@ public class IslandGeneticAlgorithm {
         this.totalTimeMs = 0;
     }
 
-    public Individual solve(
-            TSPInstance instance)
-            throws Exception {
+    public Individual solve(TSPInstance instance) throws Exception {
 
-        long start =
-                System.currentTimeMillis();
+        long start = System.currentTimeMillis();
 
-        ExecutorService executor =
-                Executors.newFixedThreadPool(
-                        islands
-                );
+        ExecutorService executor = Executors.newFixedThreadPool(islands);
 
-        List<Individual> islandBest =
-                new ArrayList<>();
+        List<Individual> islandBest = new ArrayList<>();
 
-        /*
-            parallel islands
-         */
-        List<Future<Individual>> futures =
-                new ArrayList<>();
+        List<Future<Individual>> futures = new ArrayList<>();
 
-        for (int island = 0;
-             island < islands;
-             island++) {
+        for (int island = 0; island < islands; island++) {
 
-            futures.add(
-                    executor.submit(() -> {
+            futures.add(executor.submit(() -> {
 
-                        GeneticAlgorithm ga =
-                                new GeneticAlgorithm(
-                                        instance
-                                );
+                        GeneticAlgorithm ga = new GeneticAlgorithm(instance);
 
                         return ga.solve(instance);
                     })
             );
         }
 
-        for (Future<Individual> future
-                : futures) {
+        for (Future<Individual> future : futures) {
 
-            islandBest.add(
-                    future.get()
-            );
+            islandBest.add(future.get());
         }
 
-        /*
-            migration
-         */
-        for (int epoch = 0;
-             epoch < migrationInterval;
-             epoch++) {
+        for (int epoch = 0; epoch < migrationInterval; epoch++) {
 
             migrate(islandBest);
 
@@ -97,46 +72,30 @@ public class IslandGeneticAlgorithm {
 
         executor.shutdown();
 
-        Individual best =
-                islandBest.stream()
-                        .min(
+        Individual best = islandBest.stream().min(
                                 Comparator.comparingDouble(
                                         x -> x.getDistance(instance)
                                 )
-                        )
-                        .orElse(null);
+                        ).orElse(null);
 
-        totalTimeMs =
-                System.currentTimeMillis()
-                        - start;
+        totalTimeMs = System.currentTimeMillis() - start;
 
         return best;
     }
 
-    private void migrate(
-            List<Individual> islands) {
+    private void migrate(List<Individual> islands) {
 
         if (islands.size() < 2) {
             return;
         }
 
-        for (int i = 0;
-             i < islands.size();
-             i++) {
+        for (int i = 0; i < islands.size(); i++) {
 
-            int next =
-                    (i + 1)
-                            % islands.size();
+            int next = (i + 1) % islands.size();
 
-            Individual migrant =
-                    new Individual(
-                            islands.get(i)
-                    );
+            Individual migrant = new Individual(islands.get(i));
 
-            islands.set(
-                    next,
-                    migrant
-            );
+            islands.set(next, migrant);
         }
     }
 

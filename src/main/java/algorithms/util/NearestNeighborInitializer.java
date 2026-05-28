@@ -6,62 +6,39 @@ import java.util.Random;
 
 public class NearestNeighborInitializer {
 
-    private static final Random random =
-            new Random();
+    private static final Random random = new Random();
 
-    public static int[] generate(
-            TSPInstance instance) {
+    public static int[] generate(TSPInstance instance) {
 
-        int n =
-                instance.getDimension();
+        int n = instance.getDimension();
 
-        int[] route =
-                new int[n];
+        int[] route = new int[n];
 
-        boolean[] visited =
-                new boolean[n];
+        boolean[] visited = new boolean[n];
 
-        /*
-            random start
-         */
-        int current =
-                random.nextInt(n);
+        int current = random.nextInt(n);
 
         route[0] = current;
 
         visited[current] = true;
 
-        /*
-            nearest neighbor
-         */
-        for (int i = 1;
-             i < n;
-             i++) {
+        for (int i = 1; i < n; i++) {
 
             int next = -1;
 
-            double bestDistance =
-                    Double.MAX_VALUE;
+            double bestDistance = Double.MAX_VALUE;
 
-            for (int city = 0;
-                 city < n;
-                 city++) {
+            for (int city = 0; city < n; city++) {
 
                 if (visited[city]) {
                     continue;
                 }
 
-                double distance =
-                        instance.getDistance(
-                                current,
-                                city
-                        );
+                double distance = instance.getDistance(current, city);
 
-                if (distance
-                        < bestDistance) {
+                if (distance < bestDistance) {
 
-                    bestDistance =
-                            distance;
+                    bestDistance = distance;
 
                     next = city;
                 }

@@ -9,41 +9,28 @@ public class PMXCrossover {
 
     private final Random random;
 
-    /*
-        statistics
-     */
     private long crossovers;
 
     public PMXCrossover() {
 
-        this.random =
-                new Random();
+        this.random = new Random();
 
         this.crossovers = 0;
     }
 
-    public Individual crossover(
-            Individual parent1,
-            Individual parent2) {
+    public Individual crossover(Individual parent1, Individual parent2) {
 
         crossovers++;
 
-        int size =
-                parent1.size();
+        int size = parent1.size();
 
-        int[] child =
-                new int[size];
+        int[] child = new int[size];
 
         Arrays.fill(child, -1);
 
-        /*
-            crossover points
-         */
-        int left =
-                random.nextInt(size);
+        int left = random.nextInt(size);
 
-        int right =
-                random.nextInt(size);
+        int right = random.nextInt(size);
 
         if (left > right) {
 
@@ -54,26 +41,14 @@ public class PMXCrossover {
             right = temp;
         }
 
-        /*
-            copy segment from parent1
-         */
-        for (int i = left;
-             i <= right;
-             i++) {
+        for (int i = left; i <= right; i++) {
 
-            child[i] =
-                    parent1.getGene(i);
+            child[i] = parent1.getGene(i);
         }
 
-        /*
-            PMX mapping
-         */
-        for (int i = left;
-             i <= right;
-             i++) {
+        for (int i = left; i <= right; i++) {
 
-            int gene =
-                    parent2.getGene(i);
+            int gene = parent2.getGene(i);
 
             if (!contains(child, gene)) {
 
@@ -81,19 +56,13 @@ public class PMXCrossover {
 
                 while (true) {
 
-                    int mappedGene =
-                            parent1.getGene(position);
+                    int mappedGene = parent1.getGene(position);
 
-                    position =
-                            findIndex(
-                                    parent2,
-                                    mappedGene
-                            );
+                    position = findIndex(parent2, mappedGene);
 
                     if (child[position] == -1) {
 
-                        child[position] =
-                                gene;
+                        child[position] = gene;
 
                         break;
                     }
@@ -101,26 +70,18 @@ public class PMXCrossover {
             }
         }
 
-        /*
-            fill remaining from parent2
-         */
-        for (int i = 0;
-             i < size;
-             i++) {
+        for (int i = 0; i < size; i++) {
 
             if (child[i] == -1) {
 
-                child[i] =
-                        parent2.getGene(i);
+                child[i] = parent2.getGene(i);
             }
         }
 
         return new Individual(child);
     }
 
-    private boolean contains(
-            int[] array,
-            int value) {
+    private boolean contains(int[] array, int value) {
 
         for (int x : array) {
 
@@ -132,16 +93,11 @@ public class PMXCrossover {
         return false;
     }
 
-    private int findIndex(
-            Individual individual,
-            int value) {
+    private int findIndex(Individual individual, int value) {
 
-        for (int i = 0;
-             i < individual.size();
-             i++) {
+        for (int i = 0; i < individual.size(); i++) {
 
-            if (individual.getGene(i)
-                    == value) {
+            if (individual.getGene(i) == value) {
 
                 return i;
             }

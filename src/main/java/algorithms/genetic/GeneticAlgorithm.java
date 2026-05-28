@@ -38,204 +38,110 @@ public class GeneticAlgorithm {
     public GeneticAlgorithm(
             TSPInstance instance) {
 
-        this.random =
-                new Random();
+        this.random = new Random();
 
-        this.parameters =
-                GAParameters.forProblemSize(
-                        instance.getDimension()
-                );
+        this.parameters = GAParameters.forProblemSize(instance.getDimension());
 
-        this.selection =
-                new TournamentSelection(
-                        parameters.tournamentSize
-                );
+        this.selection = new TournamentSelection(parameters.tournamentSize);
 
-        this.ox =
-                new OrderCrossover();
+        this.ox = new OrderCrossover();
 
-        this.pmx =
-                new PMXCrossover();
+        this.pmx = new PMXCrossover();
 
-        this.inversionMutation =
-                new InversionMutation();
+        this.inversionMutation = new InversionMutation();
 
-        this.insertMutation =
-                new InsertMutation();
+        this.insertMutation = new InsertMutation();
 
-        this.doubleBridgeMutation =
-                new DoubleBridgeMutation();
+        this.doubleBridgeMutation = new DoubleBridgeMutation();
 
-        this.memeticImprover =
-                new MemeticImprover(
-                        instance,
-                        parameters.localSearchIterations,
-                        parameters.candidateCount
-                );
+        this.memeticImprover = new MemeticImprover(instance, parameters.localSearchIterations, parameters.candidateCount);
     }
 
-    public Individual solve(
-            TSPInstance instance) {
+    public Individual solve(TSPInstance instance) {
 
-        Population population =
-                initializePopulation(instance);
+        Population population = initializePopulation(instance);
 
-        evaluatePopulation(
-                population,
-                instance
-        );
+        evaluatePopulation(population, instance);
 
         population.sort();
 
-        Individual globalBest =
-                new Individual(
-                        population.getBest()
-                );
+        Individual globalBest = new Individual(population.getBest());
 
         int noImprovementCounter = 0;
 
-        double mutationRate =
-                parameters.mutationRate;
+        double mutationRate = parameters.mutationRate;
 
-        for (int generation = 0;
-             generation < parameters.generations;
-             generation++) {
+        for (int generation = 0; generation < parameters.generations; generation++) {
 
-            Population newPopulation =
-                    new Population();
+            Population newPopulation = new Population();
 
             population.sort();
 
-            /*
-                strong memetic intensification
-             */
-            if (generation %
-                    parameters.intensificationInterval
-                    == 0) {
+            if (generation % parameters.intensificationInterval == 0) {
 
-                int improveCount =
-                        Math.min(
-                                population.size() / 3,
-                                parameters.intensificationCount
-                        );
+                int improveCount = Math.min(population.size() / 3, parameters.intensificationCount);
 
-                for (int i = 0;
-                     i < improveCount;
-                     i++) {
+                for (int i = 0; i < improveCount; i++) {
 
-                    memeticImprover.improve(
-                            population.get(i),
-                            instance
-                    );
+                    memeticImprover.improve(population.get(i), instance);
                 }
             }
 
-            /*
-                elitism
-             */
-            for (int i = 0;
-                 i < parameters.eliteSize;
-                 i++) {
+            for (int i = 0; i < parameters.eliteSize; i++) {
 
-                newPopulation.add(
-                        new Individual(
-                                population.get(i)
-                        )
-                );
+                newPopulation.add(new Individual(population.get(i)));
             }
 
-            while (newPopulation.size()
-                    < parameters.populationSize) {
+            while (newPopulation.size() < parameters.populationSize) {
 
-                Individual parent1 =
-                        selection.select(
-                                population,
-                                instance
-                        );
+                Individual parent1 = selection.select(population, instance);
 
-                Individual parent2 =
-                        selection.select(
-                                population,
-                                instance
-                        );
+                Individual parent2 = selection.select(population, instance);
 
                 while (same(parent1, parent2)) {
 
-                    parent2 =
-                            selection.select(
-                                    population,
-                                    instance
-                            );
+                    parent2 = selection.select(population, instance);
                 }
 
                 Individual child;
 
-                /*
-                    crossover
-                 */
-                if (random.nextDouble()
-                        < parameters.crossoverRate) {
+                if (random.nextDouble() < parameters.crossoverRate) {
 
                     if (random.nextBoolean()) {
 
-                        child =
-                                ox.crossover(
-                                        parent1,
-                                        parent2
-                                );
+                        child = ox.crossover(parent1, parent2);
 
                     } else {
 
-                        child =
-                                pmx.crossover(
-                                        parent1,
-                                        parent2
-                                );
+                        child = pmx.crossover(parent1, parent2);
                     }
 
                 } else {
 
-                    child =
-                            new Individual(parent1);
+                    child = new Individual(parent1);
                 }
 
-                /*
-                    mutation
-                 */
-                if (random.nextDouble()
-                        < mutationRate) {
+                if (random.nextDouble() < mutationRate) {
 
-                    double type =
-                            random.nextDouble();
+                    double type = random.nextDouble();
 
-                    if (noImprovementCounter > 25
-                            && type < 0.50) {
+                    if (noImprovementCounter > 25 && type < 0.50) {
 
-                        doubleBridgeMutation
-                                .mutate(child);
+                        doubleBridgeMutation.mutate(child);
 
                     } else if (type < 0.50) {
 
-                        insertMutation
-                                .mutate(child);
+                        insertMutation.mutate(child);
 
                     } else {
 
-                        inversionMutation
-                                .mutate(child);
+                        inversionMutation.mutate(child);
                     }
                 }
 
-                /*
-                    memetic
-                 */
-                if (random.nextDouble()
-                        < parameters.memeticProbability) {
+                if (random.nextDouble() < parameters.memeticProbability) {
 
-                    memeticImprover.improve(
-                            child,
-                            instance
-                    );
+                    memeticImprover.improve(child, instance);
                 }
 
                 child.getDistance(instance);
@@ -243,35 +149,17 @@ public class GeneticAlgorithm {
                 newPopulation.add(child);
             }
 
-            /*
-                immigrants
-             */
             if (generation % 10 == 0) {
 
-                for (int i = 0;
-                     i < parameters.immigrantsCount;
-                     i++) {
+                for (int i = 0; i < parameters.immigrantsCount; i++) {
 
-                    Individual immigrant =
-                            new Individual(
-                                    randomPermutation(
-                                            instance.getDimension()
-                                    )
-                            );
+                    Individual immigrant = new Individual(randomPermutation(instance.getDimension()));
 
                     immigrant.getDistance(instance);
 
-                    int replaceIndex =
-                            newPopulation.size()
-                                    - 1
-                                    - i;
+                    int replaceIndex = newPopulation.size() - 1 - i;
 
-                    newPopulation
-                            .getIndividuals()
-                            .set(
-                                    replaceIndex,
-                                    immigrant
-                            );
+                    newPopulation.getIndividuals().set(replaceIndex, immigrant);
                 }
             }
 
@@ -279,55 +167,33 @@ public class GeneticAlgorithm {
 
             population.sort();
 
-            Individual generationBest =
-                    population.getBest();
+            Individual generationBest = population.getBest();
 
-            if (generationBest.getDistance(instance)
-                    <
-                    globalBest.getDistance(instance)) {
+            if (generationBest.getDistance(instance) < globalBest.getDistance(instance)) {
 
-                globalBest =
-                        new Individual(
-                                generationBest
-                        );
+                globalBest = new Individual(generationBest);
 
                 noImprovementCounter = 0;
 
-                mutationRate =
-                        parameters.mutationRate;
+                mutationRate = parameters.mutationRate;
 
             } else {
 
                 noImprovementCounter++;
 
-                /*
-                    adaptive mutation
-                 */
-                mutationRate =
-                        Math.min(
-                                0.30,
-                                mutationRate * 1.03
-                        );
+                mutationRate = Math.min(0.30, mutationRate * 1.03);
 
-                /*
-                    stagnation intensification
-                 */
                 if (noImprovementCounter > 30) {
 
-                    for (int i = 0;
-                         i < 3;
-                         i++) {
+                    for (int i = 0; i < 3; i++) {
 
-                        memeticImprover.improve(
-                                globalBest,
-                                instance
+                        memeticImprover.improve(globalBest, instance
                         );
                     }
                 }
             }
 
-            if (noImprovementCounter
-                    >= parameters.noImprovementLimit) {
+            if (noImprovementCounter >= parameters.noImprovementLimit) {
 
                 break;
             }
@@ -336,131 +202,80 @@ public class GeneticAlgorithm {
         return globalBest;
     }
 
-    private Population initializePopulation(
-            TSPInstance instance) {
+    private Population initializePopulation(TSPInstance instance) {
 
-        List<Individual> individuals =
-                new ArrayList<>();
+        List<Individual> individuals = new ArrayList<>();
 
-        int n =
-                instance.getDimension();
+        int n = instance.getDimension();
 
-        /*
-            50% nearest neighbor
-         */
-        int heuristicCount =
-                parameters.populationSize / 2;
+        int heuristicCount = parameters.populationSize / 2;
 
-        for (int i = 0;
-             i < heuristicCount;
-             i++) {
+        for (int i = 0; i < heuristicCount; i++) {
 
-            individuals.add(
-                    new Individual(
-                            NearestNeighborInitializer
-                                    .generate(instance)
-                    )
-            );
+            individuals.add(new Individual(NearestNeighborInitializer.generate(instance)));
         }
 
-        /*
-            25% shuffled NN
-         */
-        int shuffledCount =
-                parameters.populationSize / 4;
+        int shuffledCount = parameters.populationSize / 4;
 
-        for (int i = 0;
-             i < shuffledCount;
-             i++) {
+        for (int i = 0; i < shuffledCount; i++) {
 
-            int[] route =
-                    NearestNeighborInitializer
-                            .generate(instance);
+            int[] route = NearestNeighborInitializer.generate(instance);
 
-            for (int j = 0;
-                 j < 5;
-                 j++) {
+            for (int j = 0; j < 5; j++) {
 
-                int a =
-                        random.nextInt(n);
+                int a = random.nextInt(n);
 
-                int b =
-                        random.nextInt(n);
+                int b = random.nextInt(n);
 
-                int temp =
-                        route[a];
+                int temp = route[a];
 
-                route[a] =
-                        route[b];
+                route[a] = route[b];
 
-                route[b] =
-                        temp;
+                route[b] = temp;
             }
 
-            individuals.add(
-                    new Individual(route)
+            individuals.add(new Individual(route)
             );
         }
 
-        /*
-            random
-         */
-        while (individuals.size()
-                < parameters.populationSize) {
+        while (individuals.size() < parameters.populationSize) {
 
-            individuals.add(
-                    new Individual(
-                            randomPermutation(n)
-                    )
-            );
+            individuals.add(new Individual(randomPermutation(n)));
         }
 
         return new Population(individuals);
     }
 
-    private int[] randomPermutation(
-            int n) {
+    private int[] randomPermutation(int n) {
 
-        List<Integer> values =
-                new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
 
-        for (int i = 0;
-             i < n;
-             i++) {
+        for (int i = 0; i < n; i++) {
 
             values.add(i);
         }
 
         Collections.shuffle(values);
 
-        int[] permutation =
-                new int[n];
+        int[] permutation = new int[n];
 
-        for (int i = 0;
-             i < n;
-             i++) {
+        for (int i = 0; i < n; i++) {
 
-            permutation[i] =
-                    values.get(i);
+            permutation[i] = values.get(i);
         }
 
         return permutation;
     }
 
-    private void evaluatePopulation(
-            Population population,
-            TSPInstance instance) {
+    private void evaluatePopulation(Population population, TSPInstance instance) {
 
-        for (Individual individual
-                : population.getIndividuals()) {
+        for (Individual individual : population.getIndividuals()) {
 
             individual.getDistance(instance);
         }
     }
 
-    private boolean same(
-            Individual a,
-            Individual b) {
+    private boolean same(Individual a, Individual b) {
 
         for (int i = 0;
              i < a.size();

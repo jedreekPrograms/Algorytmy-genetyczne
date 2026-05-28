@@ -11,17 +11,11 @@ import java.util.List;
 
 public class TSPParser {
 
-    public static TSPInstance parse(
-            String path)
-            throws IOException {
+    public static TSPInstance parse(String path) throws IOException {
 
-        BufferedReader reader =
-                new BufferedReader(
-                        new FileReader(path)
-                );
+        BufferedReader reader = new BufferedReader(new FileReader(path));
 
-        List<City> cities =
-                new ArrayList<>();
+        List<City> cities = new ArrayList<>();
 
         String line;
 
@@ -52,29 +46,19 @@ public class TSPParser {
                 continue;
             }
 
-            String[] parts =
-                    line.split("\\s+");
+            String[] parts = line.split("\\s+");
 
             if (parts.length < 3) {
                 continue;
             }
 
-            int id =
-                    Integer.parseInt(parts[0]) - 1;
+            int id = Integer.parseInt(parts[0]) - 1;
 
-            double x =
-                    Double.parseDouble(parts[1]);
+            double x = Double.parseDouble(parts[1]);
 
-            double y =
-                    Double.parseDouble(parts[2]);
+            double y = Double.parseDouble(parts[2]);
 
-            cities.add(
-                    new City(
-                            id,
-                            x,
-                            y
-                    )
-            );
+            cities.add(new City(id, x, y));
         }
 
         reader.close();

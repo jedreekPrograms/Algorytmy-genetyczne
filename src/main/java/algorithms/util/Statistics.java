@@ -4,8 +4,7 @@ import java.util.List;
 
 public class Statistics {
 
-    public static double average(
-            List<Double> values) {
+    public static double average(List<Double> values) {
 
         if (values.isEmpty()) {
             return 0.0;
@@ -28,8 +27,7 @@ public class Statistics {
             return 0.0;
         }
 
-        double best =
-                Double.MAX_VALUE;
+        double best = Double.MAX_VALUE;
 
         for (double value : values) {
 
@@ -41,15 +39,13 @@ public class Statistics {
         return best;
     }
 
-    public static double worst(
-            List<Double> values) {
+    public static double worst(List<Double> values) {
 
         if (values.isEmpty()) {
             return 0.0;
         }
 
-        double worst =
-                Double.MIN_VALUE;
+        double worst = Double.MIN_VALUE;
 
         for (double value : values) {
 
@@ -61,33 +57,28 @@ public class Statistics {
         return worst;
     }
 
-    public static double standardDeviation(
-            List<Double> values) {
+    public static double standardDeviation(List<Double> values) {
 
         if (values.isEmpty()) {
             return 0.0;
         }
 
-        double avg =
-                average(values);
+        double avg = average(values);
 
         double sum = 0.0;
 
         for (double value : values) {
 
-            double diff =
-                    value - avg;
+            double diff = value - avg;
 
             sum += diff * diff;
         }
 
-        return Math.sqrt(
-                sum / values.size()
+        return Math.sqrt(sum / values.size()
         );
     }
 
-    public static double median(
-            List<Double> values) {
+    public static double median(List<Double> values) {
 
         if (values.isEmpty()) {
             return 0.0;
@@ -95,16 +86,11 @@ public class Statistics {
 
         values.sort(Double::compareTo);
 
-        int size =
-                values.size();
+        int size = values.size();
 
         if (size % 2 == 0) {
 
-            return (
-                    values.get(size / 2 - 1)
-                            +
-                            values.get(size / 2)
-            ) / 2.0;
+            return (values.get(size / 2 - 1) + values.get(size / 2)) / 2.0;
         }
 
         return values.get(size / 2);

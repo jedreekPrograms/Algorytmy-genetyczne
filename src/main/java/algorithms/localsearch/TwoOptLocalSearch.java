@@ -20,15 +20,9 @@ public class TwoOptLocalSearch {
 
     private long totalTimeMs;
 
-    public TwoOptLocalSearch(
-            TSPInstance instance,
-            int candidateCount) {
+    public TwoOptLocalSearch(TSPInstance instance, int candidateCount) {
 
-        this.neighborhood =
-                new TwoOptNeighborhood(
-                        instance,
-                        candidateCount
-                );
+        this.neighborhood = new TwoOptNeighborhood(instance, candidateCount);
 
         this.performedMoves = 0;
 
@@ -39,18 +33,13 @@ public class TwoOptLocalSearch {
         this.totalTimeMs = 0;
     }
 
-    public void improve(
-            Individual individual,
-            TSPInstance instance,
-            int maxIterations) {
+    public void improve(Individual individual, TSPInstance instance, int maxIterations) {
 
-        long start =
-                System.currentTimeMillis();
+        long start = System.currentTimeMillis();
 
         localSearchCalls++;
 
-        int[] route =
-                individual.getChromosomeReference();
+        int[] route = individual.getChromosomeReference();
 
         int iteration = 0;
 
@@ -62,15 +51,8 @@ public class TwoOptLocalSearch {
 
             totalIterations++;
 
-            TwoOptMove move =
-                    neighborhood.findMove(
-                            route,
-                            instance
-                    );
+            TwoOptMove move = neighborhood.findMove(route, instance);
 
-            /*
-                no improving move
-             */
             if (move == null) {
 
                 noImprovementCounter++;
@@ -82,19 +64,14 @@ public class TwoOptLocalSearch {
                 continue;
             }
 
-            neighborhood.applyMove(
-                    route,
-                    move
-            );
+            neighborhood.applyMove(route, move);
 
             performedMoves++;
         }
 
         individual.invalidate();
 
-        totalTimeMs +=
-                System.currentTimeMillis()
-                        - start;
+        totalTimeMs += System.currentTimeMillis() - start;
     }
 
     public long getPerformedMoves() {
@@ -123,9 +100,7 @@ public class TwoOptLocalSearch {
             return 0.0;
         }
 
-        return (double)
-                totalIterations
-                / localSearchCalls;
+        return (double) totalIterations / localSearchCalls;
     }
 
     public double getAverageTimeMs() {
@@ -134,9 +109,7 @@ public class TwoOptLocalSearch {
             return 0.0;
         }
 
-        return (double)
-                totalTimeMs
-                / localSearchCalls;
+        return (double) totalTimeMs / localSearchCalls;
     }
 
     @Override

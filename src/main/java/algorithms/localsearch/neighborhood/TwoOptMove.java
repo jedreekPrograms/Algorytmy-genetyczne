@@ -10,10 +10,7 @@ public class TwoOptMove {
 
     private final long creationTime;
 
-    public TwoOptMove(
-            int left,
-            int right,
-            double delta) {
+    public TwoOptMove(int left, int right, double delta) {
 
         this.left = left;
 
@@ -21,8 +18,7 @@ public class TwoOptMove {
 
         this.delta = delta;
 
-        this.creationTime =
-                System.nanoTime();
+        this.creationTime = System.nanoTime();
     }
 
     public int getLeft() {

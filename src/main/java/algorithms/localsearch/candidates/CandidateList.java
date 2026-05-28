@@ -15,59 +15,36 @@ public class CandidateList {
 
     private long buildTimeMs;
 
-    public CandidateList(
-            TSPInstance instance,
-            int candidateCount) {
+    public CandidateList(TSPInstance instance, int candidateCount) {
 
-        long start =
-                System.currentTimeMillis();
+        long start = System.currentTimeMillis();
 
-        this.dimension =
-                instance.getDimension();
+        this.dimension = instance.getDimension();
 
-        this.candidateCount =
-                Math.min(
-                        candidateCount,
-                        dimension - 1
-                );
+        this.candidateCount = Math.min(candidateCount, dimension - 1);
 
-        this.candidates =
-                new int[dimension]
-                        [this.candidateCount];
+        this.candidates = new int[dimension][this.candidateCount];
 
         build(instance);
 
-        this.buildTimeMs =
-                System.currentTimeMillis()
-                        - start;
+        this.buildTimeMs = System.currentTimeMillis() - start;
     }
 
-    private void build(
-            TSPInstance instance) {
+    private void build(TSPInstance instance) {
 
-        for (int city = 0;
-             city < dimension;
-             city++) {
+        for (int city = 0; city < dimension; city++) {
 
-            buildForCity(
-                    instance,
-                    city
-            );
+            buildForCity(instance, city);
         }
     }
 
-    private void buildForCity(
-            TSPInstance instance,
-            int city) {
+    private void buildForCity(TSPInstance instance, int city) {
 
-        Integer[] neighbors =
-                new Integer[dimension - 1];
+        Integer[] neighbors = new Integer[dimension - 1];
 
         int index = 0;
 
-        for (int other = 0;
-             other < dimension;
-             other++) {
+        for (int other = 0; other < dimension; other++) {
 
             if (city == other) {
                 continue;
@@ -76,22 +53,11 @@ public class CandidateList {
             neighbors[index++] = other;
         }
 
-        Arrays.sort(
-                neighbors,
-                Comparator.comparingDouble(
-                        x -> instance.getDistance(
-                                city,
-                                x
-                        )
-                )
-        );
+        Arrays.sort(neighbors, Comparator.comparingDouble(x -> instance.getDistance(city, x)));
 
-        for (int i = 0;
-             i < candidateCount;
-             i++) {
+        for (int i = 0; i < candidateCount; i++) {
 
-            candidates[city][i] =
-                    neighbors[i];
+            candidates[city][i] = neighbors[i];
         }
     }
 

@@ -11,29 +11,18 @@ public class TwoOptNeighborhood {
 
     private long improvingMoves;
 
-    public TwoOptNeighborhood(
-            TSPInstance instance,
-            int candidateCount) {
+    public TwoOptNeighborhood(TSPInstance instance, int candidateCount) {
 
-        this.candidateList =
-                new CandidateList(
-                        instance,
-                        candidateCount
-                );
+        this.candidateList = new CandidateList(instance, candidateCount);
     }
 
-    public TwoOptMove findMove(
-            int[] route,
-            TSPInstance instance) {
+    public TwoOptMove findMove(int[] route, TSPInstance instance) {
 
         int n = route.length;
 
-        int[] position =
-                new int[n];
+        int[] position = new int[n];
 
-        for (int i = 0;
-             i < n;
-             i++) {
+        for (int i = 0; i < n; i++) {
 
             position[route[i]] = i;
         }
@@ -42,25 +31,17 @@ public class TwoOptNeighborhood {
 
         double bestDelta = 0.0;
 
-        for (int i = 0;
-             i < n;
-             i++) {
+        for (int i = 0; i < n; i++) {
 
-            int cityA =
-                    route[i];
+            int cityA = route[i];
 
-            int cityB =
-                    route[(i + 1) % n];
+            int cityB = route[(i + 1) % n];
 
-            int[] candidates =
-                    candidateList.getCandidates(
-                            cityA
-                    );
+            int[] candidates = candidateList.getCandidates(cityA);
 
             for (int candidate : candidates) {
 
-                int j =
-                        position[candidate];
+                int j = position[candidate];
 
                 if (j == i) {
                     continue;
@@ -74,39 +55,17 @@ public class TwoOptNeighborhood {
                     continue;
                 }
 
-                int next =
-                        (j + 1) % n;
+                int next = (j + 1) % n;
 
-                int cityC =
-                        route[j];
+                int cityC = route[j];
 
-                int cityD =
-                        route[next];
+                int cityD = route[next];
 
-                double before =
-                        instance.getDistance(
-                                cityA,
-                                cityB
-                        )
-                                +
-                                instance.getDistance(
-                                        cityC,
-                                        cityD
-                                );
+                double before = instance.getDistance(cityA, cityB) + instance.getDistance(cityC, cityD);
 
-                double after =
-                        instance.getDistance(
-                                cityA,
-                                cityC
-                        )
-                                +
-                                instance.getDistance(
-                                        cityB,
-                                        cityD
-                                );
+                double after = instance.getDistance(cityA, cityC) + instance.getDistance(cityB, cityD);
 
-                double delta =
-                        after - before;
+                double delta = after - before;
 
                 evaluatedMoves++;
 
@@ -114,33 +73,18 @@ public class TwoOptNeighborhood {
 
                     improvingMoves++;
 
-                    int left =
-                            Math.min(
-                                    i + 1,
-                                    j
-                            );
+                    int left = Math.min(i + 1, j);
 
-                    int right =
-                            Math.max(
-                                    i + 1,
-                                    j
-                            );
+                    int right = Math.max(i + 1, j);
 
-                    if (left < 0
-                            || right >= n
-                            || left >= right) {
+                    if (left < 0 || right >= n || left >= right) {
 
                         continue;
                     }
 
                     bestDelta = delta;
 
-                    bestMove =
-                            new TwoOptMove(
-                                    left,
-                                    right,
-                                    delta
-                            );
+                    bestMove = new TwoOptMove(left, right, delta);
                 }
             }
         }
@@ -148,32 +92,20 @@ public class TwoOptNeighborhood {
         return bestMove;
     }
 
-    public void applyMove(
-            int[] route,
-            TwoOptMove move) {
+    public void applyMove(int[] route, TwoOptMove move) {
 
-        reverse(
-                route,
-                move.getLeft(),
-                move.getRight()
-        );
+        reverse(route, move.getLeft(), move.getRight());
     }
 
-    private void reverse(
-            int[] route,
-            int left,
-            int right) {
+    private void reverse(int[] route, int left, int right) {
 
         while (left < right) {
 
-            int temp =
-                    route[left];
+            int temp = route[left];
 
-            route[left] =
-                    route[right];
+            route[left] = route[right];
 
-            route[right] =
-                    temp;
+            route[right] = temp;
 
             left++;
             right--;
